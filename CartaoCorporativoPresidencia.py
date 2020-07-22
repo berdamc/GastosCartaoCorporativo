@@ -1,3 +1,19 @@
+# Este arquivo tem for finalidade realizar o download dos arquivos diretamente do
+# Portal da Transparência do Governo Federal e transformá-los em gráficos. Os gastos
+# são de todas as instituições públicas ligadas ao Governo Federal.
+
+# O download é feito do ano de 2013 até o momento, pode ser que ocorra problemas no download
+# do mês corrente pelo fato de que esses dados não estejam disponíveis no Portal.
+# Os dados de todos os meses do Portal, depois de baixados e descompactados do formato ZIP, são reunidos
+# em apenas um arquivo chamado DadosReunidos.CSV
+
+# A partir desse arquivo são gerados os gráficos.
+# Esta programação está configurada para gerar gráficos inicialmente dos gastos relacionados à
+# Presidência da República. Para realizar a alteração do órgão
+
+#Leia na linha 135 deste arquivo outras  opções de pesquisa
+
+
 import datetime
 import requests
 import urllib
@@ -117,9 +133,16 @@ def main():
     df["ANO EXTRATO"] = df["ANO EXTRATO"].astype(str)
 
     ####Gastos gerais do Governo##################
+    #Altere a linha abaixo onde está escrito 'Presidência da República' para o órgão de sua escolha,
+    #verifique o nome correto do órgão no início do arquivo 'DadosReunidos.CSV'
+
+    #Exemplo: No início do arquivo DadosReunidos.CSV logo após o segundo ; (ponto e vírgula)
+    # existe o nome do órgão, copie e altere a linha abaixo. Você pode vasculhar o arquivo CSV para
+    # encontrar outros órgãos.
     df = df[(df['NOME ÓRGÃO SUPERIOR'] == 'Presidência da República')]
     df = df.groupby(['ANO EXTRATO', 'MÊS EXTRATO'])["VALOR TRANSAÇÃO"].sum()
     print(df)
+    ################################################
 
     ax = df.plot(x=['ANO EXTRATO', 'MÊS EXTRATO'], y="VALOR TRANSAÇÃO", kind='bar', fontsize=7, color="indigo");
     ax.set_title("Gastos do governo desde 2013 - Apenas Presidência da República", fontsize=15)
